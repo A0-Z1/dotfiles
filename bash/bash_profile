@@ -1,0 +1,29 @@
+#
+# ~/.bash_profile
+#
+
+# NB bash_profile is executed only once at startup, that is, when an interactive login shell is launched;
+# bashrc is executed everytime a interactive non-login shell or a non-interactive shell is launched.
+# this means that everytime you open a PTS, bashrc is launched, whereas when you open a tty and log in, bash_profile is launched.
+# So if you want to execute a command only once at startup, put them here. This should also be the place for
+# environment variables, but as you can see below there is a call to bashrc, so every env variable defined there is also
+# defined at startup.
+
+[[ -f ~/.bashrc ]] && . ~/.bashrc
+
+# check user local anacron jobs at startup
+/usr/bin/anacron -s -t /home/a0z1/.anacron/etc/anacrontab -S /home/a0z1/.anacron/spool/
+
+# start sway at login: if running from tty1 start sway; NB: exec SUBSTITUTES the shell
+# taken from https://askubuntu.com/questions/525767/what-does-an-exec-command-do:
+# If the command exists and is executable, it replaces the current shell. 
+# That means that if exec appears in a script, the instructions following the exec call will never be executed (unless exec is itself in a subshell). 
+# A successful exec never returns. Shell traps like "EXIT" won't get triggered either.
+#
+# That means the in my previous config, where I had an exec anacron AFTER executing sway, that exec was a 'sway' exec, like in sway configuration file.
+# This also explains why, when I tried to log into a different tty, it kept returning to log in: every time, since I wasn't in a sway shell, my bash_profile
+# would execute anacron, replacing it with the shell. But of course that would die immediately, making me return to login. With the current set up it should all
+# be alright.
+if [ "$(tty)" = "/dev/tty1" ]; then
+    exec sway
+fi

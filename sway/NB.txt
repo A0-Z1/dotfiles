@@ -1,0 +1,3 @@
+for volume and audio in general, either use pactl or amixer -c 1 <command>
+Also check out alsamixer for cool interactive control from terminal
+also pavucontrol for interactive audio input and output control in GUI
